@@ -1,16 +1,13 @@
 import "@/styles/globals.css";
 import { Metadata, Viewport } from "next";
-import { Link } from "@heroui/link";
 import clsx from "clsx";
+import { ClerkProvider } from "@clerk/nextjs";
 
 import { Providers } from "../providers";
 
 import { siteConfig } from "@/config/site";
 import { fontSans } from "@/config/fonts";
-
 import Sidebar from "@/components/sidebar/App";
-import { ClerkProvider } from "@clerk/nextjs";
-import { dark } from "@clerk/themes";
 
 export const metadata: Metadata = {
   title: {
@@ -41,8 +38,9 @@ export default function RootLayout({
       <body
         className={clsx(
           "min-h-screen bg-background font-sans antialiased",
-          fontSans.variable
-        )}>
+          fontSans.variable,
+        )}
+      >
         <Providers themeProps={{ attribute: "class", defaultTheme: "white" }}>
           <ClerkProvider afterSignOutUrl="/login" appearance={{}}>
             <div className=" h-screen">

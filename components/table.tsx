@@ -1,4 +1,4 @@
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import {
   MaterialReactTable,
   useMaterialReactTable,
@@ -8,7 +8,6 @@ import {
   type MRT_RowData,
 } from "material-react-table";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import SelectAutocomplete from "@/components/SelectAutocomplete";
 import {
   MRT_EditActionButtons,
   // createRow,
@@ -26,7 +25,8 @@ import {
 import { Button } from "@heroui/react";
 import EditIcon from "@mui/icons-material/Edit";
 import DeleteIcon from "@mui/icons-material/Delete";
-import { group } from "d3";
+
+import SelectAutocomplete from "@/components/SelectAutocomplete";
 interface CustomTableProps<T extends MRT_RowData> {
   columns: MRT_ColumnDef<T>[];
   data: T[];
@@ -135,6 +135,7 @@ const CustomTable = <T extends MRT_RowData>({
     columnVisibility: { ...columnVisibility, _id: false },
   };
   const defaultLocalization = {};
+
   useEffect(() => {
     if (filtersState.length === 0) {
       setFilteredData(data);
@@ -177,11 +178,12 @@ const CustomTable = <T extends MRT_RowData>({
       <>
         <DialogTitle variant="h6">Crear Nuevo Registro</DialogTitle>
         <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+          sx={{ display: "flex", flexDirection: "column", gap: "1rem" }}
+        >
           {internalEditComponents}
         </DialogContent>
         <DialogActions>
-          <MRT_EditActionButtons variant="text" table={table} row={row} />
+          <MRT_EditActionButtons row={row} table={table} variant="text" />
         </DialogActions>
       </>
     ),
@@ -189,11 +191,12 @@ const CustomTable = <T extends MRT_RowData>({
       <>
         <DialogTitle variant="h6">Editar Registro</DialogTitle>
         <DialogContent
-          sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
+          sx={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}
+        >
           {internalEditComponents}
         </DialogContent>
         <DialogActions>
-          <MRT_EditActionButtons variant="text" table={table} row={row} />
+          <MRT_EditActionButtons row={row} table={table} variant="text" />
         </DialogActions>
       </>
     ),
@@ -209,7 +212,8 @@ const CustomTable = <T extends MRT_RowData>({
           <Tooltip title="Eliminar">
             <IconButton
               color="error"
-              onClick={async () => await onDeletingRow(row)}>
+              onClick={async () => await onDeletingRow(row)}
+            >
               <DeleteIcon />
             </IconButton>
           </Tooltip>
@@ -226,23 +230,25 @@ const CustomTable = <T extends MRT_RowData>({
               return (
                 <SelectAutocomplete
                   key={index}
-                  options={filter.options}
-                  multiple={filter.multiple}
-                  value={filter.value}
-                  onChange={filter.onChange}
-                  placeholder={filter.placeholder}
                   label={filter.label}
                   labelSeleccionado={false}
+                  multiple={filter.multiple}
+                  options={filter.options}
+                  placeholder={filter.placeholder}
+                  value={filter.value}
+                  onChange={filter.onChange}
                 />
               );
             }
+
             return null;
           })}
         {onCreatingRowSave && (
           <Button
             color="primary"
             variant="flat"
-            onPress={() => table.setCreatingRow(true)}>
+            onPress={() => table.setCreatingRow(true)}
+          >
             Crear Nuevo Registro
           </Button>
         )}
@@ -268,22 +274,26 @@ const CustomTable = <T extends MRT_RowData>({
         typeof updaterOrValue === "function"
           ? updaterOrValue(filtersState)
           : updaterOrValue;
+
       setFiltersState(filtersArray);
 
       const newFilteredData = data.filter((row) => {
         return filtersArray.every((filter) => {
           const columnValue = row[filter.id];
+
           if (Array.isArray(filter.value)) {
             return filter.value.some((val) =>
-              columnValue.toString().toLowerCase().includes(val.toLowerCase())
+              columnValue.toString().toLowerCase().includes(val.toLowerCase()),
             );
           }
+
           return columnValue
             .toString()
             .toLowerCase()
             .includes(filter.value.toLowerCase());
         });
       });
+
       setFilteredData(newFilteredData);
 
       filterDependencies.forEach((dep: any) => {

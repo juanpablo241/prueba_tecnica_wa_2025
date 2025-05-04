@@ -5,13 +5,15 @@ export async function GET() {
 
   // 1. Recoger todas las fechas únicas
   const dates = Array.from(
-    new Set(data.map((d) => d.VisibleForecastedDate))
+    new Set(data.map((d) => d.VisibleForecastedDate)),
   ).sort();
 
   // 2. Agrupar por Reference y construir las filas
   const rowMap: Record<string, any> = {};
+
   data.forEach((d) => {
     const key = d.Reference;
+
     rowMap[key] ??= {};
     rowMap[key].Reference = d.Reference;
     rowMap[key].CenterCode = d.CenterCode;

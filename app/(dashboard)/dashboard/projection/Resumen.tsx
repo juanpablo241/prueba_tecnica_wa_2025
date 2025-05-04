@@ -1,8 +1,7 @@
 /* Resumen.tsx */
 "use client";
-import React, { useMemo } from "react";
-import type { CardProps, Selection } from "@heroui/react";
 
+import React, { useMemo } from "react";
 import {
   Card,
   CardHeader,
@@ -38,14 +37,16 @@ const getCellColor = (
   makeToOrder: number,
   redZone: number,
   yellowZone: number,
-  greenZone: number
+  greenZone: number,
 ) => {
   const total = netFlow + makeToOrder;
+
   if (total === 0) return "Negro";
   if (total >= 1 && total <= redZone) return "Rojo";
   if (total > redZone && total <= yellowZone) return "Amarillo";
   if (total > yellowZone && total <= greenZone) return "Verde";
   if (total > greenZone) return "Azul";
+
   return "Sin color";
 };
 
@@ -53,7 +54,7 @@ const Resumen: React.FC<ResumenProps> = ({ data, selectedDate }) => {
   const summary = useMemo(() => {
     if (!selectedDate) return null;
     const filtered = data.filter(
-      (d) => d.VisibleForecastedDate === selectedDate
+      (d) => d.VisibleForecastedDate === selectedDate,
     );
     const counts: Record<string, number> = {
       Rojo: 0,
@@ -69,27 +70,30 @@ const Resumen: React.FC<ResumenProps> = ({ data, selectedDate }) => {
         d.MakeToOrder,
         d.RedZone,
         d.YellowZone,
-        d.GreenZone
+        d.GreenZone,
       );
+
       counts[color] = (counts[color] || 0) + 1;
     });
 
     const total = filtered.length;
 
     const percentages: Record<string, string> = {};
+
     Object.entries(counts).forEach(([color, count]) => {
       percentages[color] =
         total > 0 ? ((count / total) * 100).toFixed(1) + "%" : "0%";
     });
+
     return { counts, percentages, total };
   }, [data, selectedDate]);
 
   if (!selectedDate || !summary) {
     return (
       <Alert
-        variant="flat"
         color="primary"
         title="Selecciona una fecha en el grid para ver el resumen."
+        variant="flat"
       />
     );
   }

@@ -84,7 +84,8 @@ export const brandItems: SidebarItem[] = [
           <Chip
             className="bg-primary-foreground font-medium text-primary"
             size="sm"
-            variant="flat">
+            variant="flat"
+          >
             New
           </Chip>
         ),

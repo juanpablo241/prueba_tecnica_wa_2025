@@ -55,7 +55,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
       className,
       ...props
     },
-    ref
+    ref,
   ) => {
     const [internalSelected, setInternalSelected] =
       React.useState<React.Key>(defaultSelectedKey);
@@ -64,6 +64,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
 
     const handleSelectionChange = (keys: Selection) => {
       const key = Array.from(keys)[0];
+
       if (!selectedKeys) {
         setInternalSelected(key as React.Key); // Solo actualiza el estado interno si no es controlado
       }
@@ -113,7 +114,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                 },
                 {
                   "inline-block w-11": isCompact && isNestType,
-                }
+                },
               ),
             }}
             endContent={
@@ -126,7 +127,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                 <Icon
                   className={cn(
                     "text-default-500 group-data-[selected=true]:text-foreground",
-                    iconClassName
+                    iconClassName,
                   )}
                   icon={item.icon}
                   width={24}
@@ -135,7 +136,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                 (item.startContent ?? null)
               )
             }
-            title={isCompact || isNestType ? null : item.title}>
+            title={isCompact || isNestType ? null : item.title}
+          >
             {isCompact ? (
               <Tooltip content={item.title} placement="right">
                 <div className="flex w-full items-center justify-center">
@@ -143,7 +145,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                     <Icon
                       className={cn(
                         "text-default-500 group-data-[selected=true]:text-foreground",
-                        iconClassName
+                        iconClassName,
                       )}
                       icon={item.icon}
                       width={24}
@@ -167,11 +169,12 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                   title={
                     item.icon ? (
                       <div
-                        className={"flex h-11 items-center gap-2 px-2 py-1.5"}>
+                        className={"flex h-11 items-center gap-2 px-2 py-1.5"}
+                      >
                         <Icon
                           className={cn(
                             "text-default-500 group-data-[selected=true]:text-foreground",
-                            iconClassName
+                            iconClassName,
                           )}
                           icon={item.icon}
                           width={24}
@@ -183,7 +186,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                     ) : (
                       (item.startContent ?? null)
                     )
-                  }>
+                  }
+                >
                   {item.items && item.items?.length > 0 ? (
                     <Listbox
                       className={"mt-0.5"}
@@ -191,7 +195,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                         list: cn("border-l border-default-200 pl-4"),
                       }}
                       items={item.items}
-                      variant="flat">
+                      variant="flat"
+                    >
                       {item.items.map(renderItem)}
                     </Listbox>
                   ) : (
@@ -203,8 +208,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
           </ListboxItem>
         );
       },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [isCompact, hideEndContent, iconClassName, items]
+
+      [isCompact, hideEndContent, iconClassName, items],
     );
 
     const renderItem = React.useCallback(
@@ -230,7 +235,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                 <Icon
                   className={cn(
                     "text-default-500 group-data-[selected=true]:text-foreground",
-                    iconClassName
+                    iconClassName,
                   )}
                   icon={item.icon}
                   width={24}
@@ -240,7 +245,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
               )
             }
             textValue={item.title}
-            title={isCompact ? null : item.title}>
+            title={isCompact ? null : item.title}
+          >
             {isCompact ? (
               <Tooltip content={item.title} placement="right">
                 <div className="flex w-full items-center justify-center">
@@ -248,7 +254,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
                     <Icon
                       className={cn(
                         "text-default-500 group-data-[selected=true]:text-foreground",
-                        iconClassName
+                        iconClassName,
                       )}
                       icon={item.icon}
                       width={24}
@@ -262,8 +268,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
           </ListboxItem>
         );
       },
-      // eslint-disable-next-line react-hooks/exhaustive-deps
-      [isCompact, hideEndContent, iconClassName, itemClasses?.base]
+
+      [isCompact, hideEndContent, iconClassName, itemClasses?.base],
     );
 
     return (
@@ -282,11 +288,11 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
           ...itemClasses,
           base: cn(
             "px-3 min-h-11 rounded-large h-[44px] data-[selected=true]:bg-default-100",
-            itemClasses?.base
+            itemClasses?.base,
           ),
           title: cn(
             "text-small font-medium text-default-500 group-data-[selected=true]:text-foreground",
-            itemClasses?.title
+            itemClasses?.title,
           ),
         }}
         items={items}
@@ -294,7 +300,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
         selectionMode="single"
         variant="flat"
         onSelectionChange={handleSelectionChange}
-        {...props}>
+        {...props}
+      >
         {(item) => {
           return item.items &&
             item.items?.length > 0 &&
@@ -305,7 +312,8 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
               key={item.key}
               classNames={sectionClasses}
               showDivider={isCompact}
-              title={item.title}>
+              title={item.title}
+            >
               {item.items.map(renderItem)}
             </ListboxSection>
           ) : (
@@ -314,7 +322,7 @@ const Sidebar = React.forwardRef<HTMLElement, SidebarProps>(
         }}
       </Listbox>
     );
-  }
+  },
 );
 
 Sidebar.displayName = "Sidebar";

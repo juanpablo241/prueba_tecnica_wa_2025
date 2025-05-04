@@ -7,6 +7,7 @@ import {
   type MRT_ColumnDef,
   type MRT_ColumnVirtualizer,
 } from "material-react-table";
+
 import { getProyeccion } from "@/actions/projection/page";
 
 export type DataItem = {
@@ -38,6 +39,7 @@ const getCellColor = (
   if (total > redZone && total <= yellowZone) return "#F0B100"; // Amarillo
   if (total > yellowZone && total <= greenZone) return "#008236"; // Verde
   if (total > greenZone) return "#00A6F4"; // Azul
+
   return "transparent"; // Otro caso
 };
 
@@ -65,9 +67,11 @@ const ProyeccionGrid: React.FC<ProyeccionGridProps> = ({ onDateSelect }) => {
     const items: DataItem[] = Object.values(tableData)
       .map((row) => {
         const data = row[fecha];
+
         return Array.isArray(data) ? undefined : (data as DataItem | undefined);
       })
       .filter((d): d is DataItem => Boolean(d));
+
     onDateSelect(fecha, items);
   };
 
@@ -89,6 +93,7 @@ const ProyeccionGrid: React.FC<ProyeccionGridProps> = ({ onDateSelect }) => {
           header: fecha.slice(0, 10),
           accessorFn: (row: Record<string, unknown>) => {
             const d = row[fecha] as DataItem | undefined;
+
             return d?.MakeToOrder ?? 0;
           },
           muiTableBodyCellProps: ({
@@ -108,6 +113,7 @@ const ProyeccionGrid: React.FC<ProyeccionGridProps> = ({ onDateSelect }) => {
                   d.GreenZone
                 )
               : undefined;
+
             return {
               sx: {
                 backgroundColor: color,
@@ -128,6 +134,7 @@ const ProyeccionGrid: React.FC<ProyeccionGridProps> = ({ onDateSelect }) => {
             };
           }) => {
             const d = cell.row.original[fecha] as DataItem | undefined;
+
             return {
               type: "number",
               value: d?.MakeToOrder ?? 0,
@@ -135,7 +142,6 @@ const ProyeccionGrid: React.FC<ProyeccionGridProps> = ({ onDateSelect }) => {
                 if (!d) return;
                 const nuevo = Number(e.target.value);
 
-                // Actualizar el estado de manera inmutable
                 setTableData((prev) => {
                   return prev.map((row) => {
                     if (row.Reference === d.Reference) {
@@ -147,6 +153,7 @@ const ProyeccionGrid: React.FC<ProyeccionGridProps> = ({ onDateSelect }) => {
                         },
                       };
                     }
+
                     return row;
                   });
                 });

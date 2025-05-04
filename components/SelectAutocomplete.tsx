@@ -6,7 +6,6 @@ import {
   ListboxItem,
   Autocomplete,
   AutocompleteItem,
-  radio,
 } from "@heroui/react";
 import { Icon } from "@iconify/react";
 
@@ -43,7 +42,7 @@ const SearchableSelect = ({
   const [searchTerm, setSearchTerm] = useState("");
 
   const [selectedValues, setSelectedValues] = useState(
-    multiple ? new Set(value || []) : [value]
+    multiple ? new Set(value || []) : [value],
   );
 
   useEffect(() => {
@@ -72,8 +71,8 @@ const SearchableSelect = ({
       onChange &&
         onChange(
           Array.from(newSelection).filter(
-            (item): item is string => item !== null
-          )
+            (item): item is string => item !== null,
+          ),
         );
     }
   };
@@ -84,7 +83,7 @@ const SearchableSelect = ({
   const filteredOptions = options?.filter((option) =>
     removeAccents(option.label)
       ?.toLowerCase()
-      ?.includes(removeAccents(searchTerm.toLowerCase()))
+      ?.includes(removeAccents(searchTerm.toLowerCase())),
   );
 
   const handleSearchChange = (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -100,7 +99,9 @@ const SearchableSelect = ({
         setIsOpen(false);
       }
     };
+
     document.addEventListener("mousedown", handleClickOutside);
+
     return () => {
       document.removeEventListener("mousedown", handleClickOutside);
     };
@@ -113,6 +114,7 @@ const SearchableSelect = ({
   useEffect(() => {
     if (isOpen && inputRef.current && dropdownRef.current) {
       const rect = inputRef.current.getBoundingClientRect();
+
       setDropdownStyle({
         position: "fixed",
         top: `${rect.bottom + window.scrollY}px`,
@@ -130,20 +132,13 @@ const SearchableSelect = ({
         <div className="relative w-full">
           <div
             ref={inputRef}
+            className="input-wrapper w-full flex flex-col gap-2"
             onClick={() => setIsOpen(!isOpen)}
-            className="input-wrapper w-full flex flex-col gap-2">
+          >
             <Input
-              variant={variant}
-              size="sm"
-              color="primary"
               aria-label={label}
-              label={label}
-              placeholder={placeholder}
-              value={searchTerm}
-              onChange={handleSearchChange}
-              isDisabled={disabled}
-              isRequired={required}
               className="input-classname"
+              color="primary"
               endContent={
                 isOpen ? (
                   <Icon
@@ -157,6 +152,14 @@ const SearchableSelect = ({
                   />
                 )
               }
+              isDisabled={disabled}
+              isRequired={required}
+              label={label}
+              placeholder={placeholder}
+              size="sm"
+              value={searchTerm}
+              variant={variant}
+              onChange={handleSearchChange}
             />
 
             {labelSeleccionado && (
@@ -166,6 +169,7 @@ const SearchableSelect = ({
                 {Array.from(selectedValues)
                   .map((value) => {
                     const option = options.find((opt) => opt.value === value);
+
                     return option ? option.label : null;
                   })
                   .filter((label) => label !== null)
@@ -176,21 +180,23 @@ const SearchableSelect = ({
           {isOpen && (
             <div
               ref={dropdownRef}
+              className="bg-white shadow-lg rounded-md max-h-64 overflow-auto"
               style={dropdownStyle}
-              className="bg-white shadow-lg rounded-md max-h-64 overflow-auto">
+            >
               <Listbox
+                aria-label={label}
                 className="w-full"
                 color="primary"
-                aria-label={label}
-                variant="flat"
                 disallowEmptySelection={!multiple}
+                isDisabled={disabled}
                 isRequired={required}
-                selectionMode={multiple ? "multiple" : "single"}
                 selectedKeys={
                   multiple ? Array.from(selectedValues) : selectedValues
                 }
+                selectionMode={multiple ? "multiple" : "single"}
+                variant="flat"
                 onSelectionChange={handleSelectionChange}
-                isDisabled={disabled}>
+              >
                 {filteredOptions.map((option) => (
                   <ListboxItem key={option.value} value={option.value}>
                     {option.label}
@@ -202,16 +208,17 @@ const SearchableSelect = ({
         </div>
       ) : (
         <Autocomplete
-          variant={variant}
+          className=""
           color="primary"
+          isDisabled={disabled}
+          isRequired={required}
           label={label}
           placeholder={placeholder}
-          className=""
-          isRequired={required}
           selectedKey={selectedValues[0]} // Use single value from array
+          variant={variant}
           onSelectionChange={(key) => handleSelectionChange([key])} // Convert single key to array
-          isDisabled={disabled}
-          {...props}>
+          {...props}
+        >
           {options.map((option) => (
             <AutocompleteItem key={option.value} value={option.value}>
               {option.label}

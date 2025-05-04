@@ -1,12 +1,13 @@
 "use client";
 import React, { useState } from "react";
+
 import ProyeccionGrid from "./ProjectionGrid";
 import Resumen from "./Resumen";
 
 const ProjectionPage: React.FC = () => {
   const [selectedDate, setSelectedDate] = useState<string | null>(null);
   const [allData, setAllData] = useState<import("./ProjectionGrid").DataItem[]>(
-    []
+    [],
   );
 
   return (

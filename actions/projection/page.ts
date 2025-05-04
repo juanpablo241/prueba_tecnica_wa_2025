@@ -10,8 +10,10 @@ export const getProyeccion = async () => {
   });
 
   const responseData = await response.json();
+
   if (!response.ok) {
     throw new Error(`Error al obtener proyeccion: ${responseData.message}`);
   }
+
   return responseData;
 };
