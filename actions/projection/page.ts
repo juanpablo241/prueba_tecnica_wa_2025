@@ -2,7 +2,6 @@
 
 export const getProyeccion = async () => {
   const baseUrl = process.env.NEXT_PUBLIC_API_URL;
-  console.log("Base URL:", `${baseUrl}/api/projection`);
   const response = await fetch(`${baseUrl}/api/projection`, {
     method: "GET",
     headers: {

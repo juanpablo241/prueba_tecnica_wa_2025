@@ -37,7 +37,7 @@ const getCellColor = (
   makeToOrder: number,
   redZone: number,
   yellowZone: number,
-  greenZone: number,
+  greenZone: number
 ) => {
   const total = netFlow + makeToOrder;
 
@@ -50,11 +50,19 @@ const getCellColor = (
   return "Sin color";
 };
 
+const colorMap: Record<string, string> = {
+  Rojo: "danger",
+  Amarillo: "warning",
+  Verde: "success",
+  Negro: "dark",
+  Azul: "primary",
+};
+
 const Resumen: React.FC<ResumenProps> = ({ data, selectedDate }) => {
   const summary = useMemo(() => {
     if (!selectedDate) return null;
     const filtered = data.filter(
-      (d) => d.VisibleForecastedDate === selectedDate,
+      (d) => d.VisibleForecastedDate === selectedDate
     );
     const counts: Record<string, number> = {
       Rojo: 0,
@@ -70,7 +78,7 @@ const Resumen: React.FC<ResumenProps> = ({ data, selectedDate }) => {
         d.MakeToOrder,
         d.RedZone,
         d.YellowZone,
-        d.GreenZone,
+        d.GreenZone
       );
 
       counts[color] = (counts[color] || 0) + 1;
@@ -119,10 +127,15 @@ const Resumen: React.FC<ResumenProps> = ({ data, selectedDate }) => {
               </TableHeader>
               <TableBody>
                 {Object.keys(summary.counts).map((color) => (
-                  <TableRow key={color}>
-                    <TableCell>{color}</TableCell>
+                  <TableRow
+                    style={{ borderRadius: "0.5rem" }}
+                    className={`bg-${colorMap[color] || "gray"} `}
+                    key={color}>
+                    <TableCell className="rounded-l-xl">{color}</TableCell>
                     <TableCell>{summary.counts[color]}</TableCell>
-                    <TableCell>{summary.percentages[color]}</TableCell>
+                    <TableCell className="rounded-r-xl">
+                      {summary.percentages[color]}
+                    </TableCell>
                   </TableRow>
                 ))}
               </TableBody>
