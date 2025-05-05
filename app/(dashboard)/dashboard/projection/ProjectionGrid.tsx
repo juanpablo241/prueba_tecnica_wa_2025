@@ -36,9 +36,10 @@ const getCellColor = (
 
   if (total === 0) return "black"; // Negro
   if (total >= 1 && total <= redZone) return "#C70036"; // Rojo
-  if (total > redZone && total <= yellowZone) return "#F0B100"; // Amarillo
-  if (total > yellowZone && total <= greenZone) return "#008236"; // Verde
-  if (total > greenZone) return "#00A6F4"; // Azul
+  if (total > redZone && total <= redZone + yellowZone) return "#F0B100"; // Amarillo
+  if (total > redZone + yellowZone && total <= redZone + yellowZone + greenZone)
+    return "#008236"; // Verde
+  if (total > redZone + yellowZone + greenZone) return "#00A6F4"; // Azul
 
   return "transparent"; // Otro caso
 };

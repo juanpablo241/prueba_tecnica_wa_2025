@@ -41,13 +41,14 @@ const getCellColor = (
 ) => {
   const total = netFlow + makeToOrder;
 
-  if (total === 0) return "Negro";
-  if (total >= 1 && total <= redZone) return "Rojo";
-  if (total > redZone && total <= yellowZone) return "Amarillo";
-  if (total > yellowZone && total <= greenZone) return "Verde";
-  if (total > greenZone) return "Azul";
+  if (total === 0) return "Negro"; // Negro
+  if (total >= 1 && total <= redZone) return "Rojo"; // Rojo
+  if (total > redZone && total <= redZone + yellowZone) return "Amarillo"; // Amarillo
+  if (total > redZone + yellowZone && total <= redZone + yellowZone + greenZone)
+    return "Verde"; // Verde
+  if (total > redZone + yellowZone + greenZone) return "Azul"; // Azul
 
-  return "Sin color";
+  return "Sin color"; // Otro caso
 };
 
 const colorMap: Record<string, string> = {
