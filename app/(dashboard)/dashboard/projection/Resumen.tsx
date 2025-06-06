@@ -34,12 +34,11 @@ interface ResumenProps {
 
 const getCellColor = (
   netFlow: number,
-  makeToOrder: number,
   redZone: number,
   yellowZone: number,
   greenZone: number
 ) => {
-  const total = netFlow + makeToOrder;
+  const total = netFlow;
 
   if (total === 0) return "Negro"; // Negro
   if (total >= 1 && total <= redZone) return "Rojo"; // Rojo
@@ -76,7 +75,6 @@ const Resumen: React.FC<ResumenProps> = ({ data, selectedDate }) => {
     filtered.forEach((d) => {
       const color = getCellColor(
         d.NetFlow,
-        d.MakeToOrder,
         d.RedZone,
         d.YellowZone,
         d.GreenZone

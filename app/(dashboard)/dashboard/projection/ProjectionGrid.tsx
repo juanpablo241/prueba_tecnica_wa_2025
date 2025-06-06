@@ -27,12 +27,11 @@ interface ProyeccionGridProps {
 
 const getCellColor = (
   netFlow: number,
-  makeToOrder: number,
   redZone: number,
   yellowZone: number,
   greenZone: number
 ) => {
-  const total = netFlow + makeToOrder;
+  const total = netFlow;
 
   if (total === 0) return "black"; // Negro
   if (total >= 1 && total <= redZone) return "#C70036"; // Rojo
@@ -50,6 +49,7 @@ const ProyeccionGrid: React.FC<ProyeccionGridProps> = ({ onDateSelect }) => {
   >({});
   const [dates, setDates] = useState<string[]>([]);
   const columnVirtualizerInstanceRef = useRef<MRT_ColumnVirtualizer>(null);
+  const [lastEditedDate, setLastEditedDate] = useState<string | null>(null);
 
   useEffect(() => {
     (async () => {
@@ -64,7 +64,15 @@ const ProyeccionGrid: React.FC<ProyeccionGridProps> = ({ onDateSelect }) => {
     })();
   }, []);
 
+  useEffect(() => {
+    if (lastEditedDate) {
+      handleDateSelect(lastEditedDate);
+      setLastEditedDate(null); // Limpiar para evitar llamadas innecesarias
+    }
+  }, [tableData]);
+
   const handleDateSelect = (fecha: string) => {
+    console.log("Fecha seleccionada:", fecha);
     const items: DataItem[] = Object.values(tableData)
       .map((row) => {
         const data = row[fecha];
@@ -106,13 +114,7 @@ const ProyeccionGrid: React.FC<ProyeccionGridProps> = ({ onDateSelect }) => {
           }) => {
             const d = cell.row.original[fecha] as DataItem | undefined;
             const color = d
-              ? getCellColor(
-                  d.NetFlow,
-                  d.MakeToOrder,
-                  d.RedZone,
-                  d.YellowZone,
-                  d.GreenZone
-                )
+              ? getCellColor(d.NetFlow, d.RedZone, d.YellowZone, d.GreenZone)
               : undefined;
 
             return {
@@ -142,23 +144,72 @@ const ProyeccionGrid: React.FC<ProyeccionGridProps> = ({ onDateSelect }) => {
               onChange: (e: React.ChangeEvent<HTMLInputElement>) => {
                 if (!d) return;
                 const nuevo = Number(e.target.value);
+                const antiguo = d.MakeToOrder;
+                const diferencia = nuevo - antiguo;
+
+                // console.log(
+                //   `ANTES: NetFlow de ${d.Reference} en ${fecha}:`,
+                //   dates.map((f) => ({
+                //     fecha: f,
+                //     netFlow: cell.row.original[f]?.NetFlow,
+                //   }))
+                // );
+
+                // console.log(
+                //   `Actualizando MakeToOrder de ${d.Reference} en ${fecha}: ${antiguo} -> ${nuevo} (diferencia: ${diferencia})`
+                // );
 
                 setTableData((prev) => {
+                  // "prev"  array de filas
                   return prev.map((row) => {
-                    if (row.Reference === d.Reference) {
-                      return {
-                        ...row,
-                        [fecha]: {
-                          ...row[fecha],
-                          MakeToOrder: nuevo,
-                        },
+                    // Si esta no es la fila que estamos editando, la devolvemos igual
+                    if (row.Reference !== d.Reference) return row;
+
+                    //  Una copia de la fila actual para no editar directamente
+                    const nuevaFila: typeof row = { ...row };
+
+                    // Actualizamos el MakeToOrder en la fecha actual:
+                    nuevaFila[fecha] = {
+                      ...nuevaFila[fecha],
+                      MakeToOrder: nuevo,
+                    };
+
+                    // Calculamos en qué posición está "fecha" dentro de "dates":
+                    const indiceFecha = dates.findIndex((f) => f === fecha);
+                    // Si no la encontramos, no hacemos nada más
+                    if (indiceFecha === -1) return nuevaFila;
+
+                    // Recorremos desde esa posición de la fecha en adelante para ajustar NetFlow
+                    for (let i = indiceFecha; i < dates.length; i++) {
+                      const fechaAAjustar = dates[i];
+                      // Asegurarnos de que existe el objeto para esa fecha
+                      if (!nuevaFila[fechaAAjustar]) continue;
+
+                      const datosAntiguos = nuevaFila[
+                        fechaAAjustar
+                      ] as DataItem;
+
+                      nuevaFila[fechaAAjustar] = {
+                        ...datosAntiguos,
+                        NetFlow: datosAntiguos.NetFlow + diferencia,
                       };
                     }
-
-                    return row;
+                    // console.log(
+                    //   `DESPUÉS: NetFlow de ${nuevaFila.Reference} en ${fecha}:`,
+                    //   dates.map((f) => ({
+                    //     fecha: f,
+                    //     netFlow: nuevaFila[f]?.NetFlow,
+                    //   }))
+                    // );
+                    // console.log(
+                    //   `Actualizado NetFlow desde ${fecha} en adelante para ${nuevaFila.Reference}`
+                    // );
+                    setLastEditedDate(fecha);
+                    return nuevaFila;
                   });
                 });
               },
+
               sx: { textAlign: "center", width: "100%" },
             };
           },
